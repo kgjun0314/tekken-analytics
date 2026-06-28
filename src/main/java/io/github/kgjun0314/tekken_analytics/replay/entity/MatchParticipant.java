@@ -18,35 +18,25 @@ public class MatchParticipant extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "match_id")
+    @JoinColumn(name = "match_id", nullable = false)
     private Match match;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "player_id")
+    @JoinColumn(name = "player_id", nullable = false)
     private Player player;
 
-    @Column(name = "character_id")
+    @Column(nullable = false)
     private Integer characterId;
 
+    @Column(nullable = false)
     private Integer rank;
 
+    @Column(nullable = false)
     private Integer power;
 
+    @Column(nullable = false)
     private Integer rounds;
 
-    @Column(name = "rating_before")
-    private Integer ratingBefore;
-
-    @Column(name = "rating_change")
-    private Integer ratingChange;
-
-    @Column(name = "region_id")
-    private Integer regionId;
-
-    @Column(name = "area_id")
-    private Integer areaId;
-
-    private String language;
-
-    private boolean winner;
+    @Column(nullable = false)
+    private Boolean winner;
 }

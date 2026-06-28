@@ -34,11 +34,6 @@ public class ReplayMapper {
                 .rank(replayPlayer.rank())
                 .power(replayPlayer.power())
                 .rounds(replayPlayer.rounds())
-                .ratingBefore(replayPlayer.ratingBefore())
-                .ratingChange(replayPlayer.ratingChange())
-                .regionId(replayPlayer.regionId())
-                .areaId(replayPlayer.areaId())
-                .language(replayPlayer.language())
                 .winner(replayPlayer.winner())
                 .build();
     }
