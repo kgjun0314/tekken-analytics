@@ -11,8 +11,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReplayService {
     private final WankApiClient client;
+    private final ReplayPersistenceService replayPersistenceService;
 
     public List<WankReplayResponse> getLatestReplays() {
         return client.getLatestReplays();
+    }
+
+    public void saveLatestReplay() {
+        List<WankReplayResponse> responses = client.getLatestReplays();
+
+        responses.forEach(replayPersistenceService::save);
     }
 }
