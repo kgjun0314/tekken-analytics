@@ -97,4 +97,41 @@ public record WankReplayResponse(
         int winner
 
 ) {
+        public ReplayPlayer player1() {
+
+                return new ReplayPlayer(
+                        p1UserId(),
+                        p1PolarisId(),
+                        p1Name(),
+                        p1CharacterId(),
+                        p1Rank(),
+                        p1Power(),
+                        p1Rounds(),
+                        p1RatingBefore(),
+                        p1RatingChange(),
+                        p1RegionId(),
+                        p1AreaId(),
+                        p1Language(),
+                        winner() == 1
+                );
+        }
+
+        public ReplayPlayer player2() {
+
+                return new ReplayPlayer(
+                        p2UserId(),
+                        p2PolarisId(),
+                        p2Name(),
+                        p2CharacterId(),
+                        p2Rank(),
+                        p2Power(),
+                        p2Rounds(),
+                        p2RatingBefore(),
+                        p2RatingChange(),
+                        p2RegionId(),
+                        p2AreaId(),
+                        p2Language(),
+                        winner() == 2
+                );
+        }
 }
