@@ -1,10 +1,13 @@
 package io.github.kgjun0314.tekken_analytics.player.query;
 
+import io.github.kgjun0314.tekken_analytics.player.dto.PlayerMatchResponse;
 import io.github.kgjun0314.tekken_analytics.player.dto.PlayerSummaryResponse;
 import io.github.kgjun0314.tekken_analytics.player.entity.Player;
 import io.github.kgjun0314.tekken_analytics.player.repository.PlayerRepository;
 import io.github.kgjun0314.tekken_analytics.replay.repository.MatchParticipantRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +36,17 @@ public class PlayerQueryService {
                 wins,
                 losses,
                 winRate
+        );
+    }
+
+    public Page<PlayerMatchResponse> getMatches(
+            Long userId,
+            Pageable pageable
+    ) {
+
+        return participantRepository.findPlayerMatches(
+                userId,
+                pageable
         );
     }
 }
