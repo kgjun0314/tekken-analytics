@@ -17,9 +17,9 @@ public class ReplayService {
         return client.getLatestReplays();
     }
 
-    public void saveLatestReplay() {
-        List<WankReplayResponse> responses = client.getLatestReplays();
-
-        responses.forEach(persistenceService::save);
-    }
+//    public void saveLatestReplay() {
+//        List<WankReplayResponse> responses = client.getLatestReplays();
+//
+//        responses.forEach(persistenceService::save);
+//    }
 }

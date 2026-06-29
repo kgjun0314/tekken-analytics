@@ -19,8 +19,8 @@ public class ReplayController {
         return replayService.getLatestReplays();
     }
 
-    @PostMapping("/replays/save")
-    public void saveReplay() {
-        replayService.saveLatestReplay();
-    }
+//    @PostMapping("/replays/save")
+//    public void saveReplay() {
+//        replayService.saveLatestReplay();
+//    }
 }

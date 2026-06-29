@@ -17,7 +17,7 @@ import java.util.List;
 public class ReplayCollectorService {
     private final WankApiClient client;
     private final ReplayMapper replayMapper;
-    private final ReplayPersistenceService replayPersistenceService;
+    private final ReplayProducer replayProducer;
 
     @Transactional
     public void collect() {
@@ -27,6 +27,6 @@ public class ReplayCollectorService {
 
         responses.stream()
                 .map(replayMapper::toReplay)
-                .forEach(replayPersistenceService::save);
+                .forEach(replayProducer::publish);
     }
 }
