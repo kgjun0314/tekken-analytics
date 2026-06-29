@@ -7,6 +7,7 @@ import io.github.kgjun0314.tekken_analytics.replay.dto.ReplayPlayer;
 import io.github.kgjun0314.tekken_analytics.replay.dto.WankReplayResponse;
 import io.github.kgjun0314.tekken_analytics.replay.entity.Match;
 import io.github.kgjun0314.tekken_analytics.replay.mapper.ReplayMapper;
+import io.github.kgjun0314.tekken_analytics.replay.model.Replay;
 import io.github.kgjun0314.tekken_analytics.replay.repository.MatchParticipantRepository;
 import io.github.kgjun0314.tekken_analytics.replay.repository.MatchRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,26 +19,22 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ReplayPersistenceService {
     private final PlayerService playerService;
-
     private final ReplayMapper replayMapper;
-
     private final MatchRepository matchRepository;
-
     private final MatchParticipantRepository matchParticipantRepository;
 
-    public void save(WankReplayResponse response) {
-
-        if (matchRepository.existsByBattleId(response.battleId())) {
+    public void save(Replay replay) {
+        if (matchRepository.existsByBattleId(replay.battleId())) {
             return;
         }
 
-        ReplayPlayer p1 = response.player1();
-        ReplayPlayer p2 = response.player2();
+        ReplayPlayer p1 = replay.player1();
+        ReplayPlayer p2 = replay.player2();
 
         Player player1 = playerService.getOrCreate(p1);
         Player player2 = playerService.getOrCreate(p2);
 
-        Match match = replayMapper.toMatch(response);
+        Match match = replayMapper.toMatch(replay);
 
         matchRepository.save(match);
 
@@ -49,6 +46,4 @@ public class ReplayPersistenceService {
                 replayMapper.toParticipant(match, player2, p2)
         );
     }
-
-
 }

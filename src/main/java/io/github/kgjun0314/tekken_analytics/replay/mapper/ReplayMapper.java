@@ -5,19 +5,20 @@ import io.github.kgjun0314.tekken_analytics.replay.dto.ReplayPlayer;
 import io.github.kgjun0314.tekken_analytics.replay.dto.WankReplayResponse;
 import io.github.kgjun0314.tekken_analytics.replay.entity.Match;
 import io.github.kgjun0314.tekken_analytics.replay.entity.MatchParticipant;
+import io.github.kgjun0314.tekken_analytics.replay.model.Replay;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 
 @Component
 public class ReplayMapper {
-    public Match toMatch(WankReplayResponse response) {
+    public Match toMatch(Replay replay) {
         return Match.builder()
-                .battleId(response.battleId())
-                .battleAt(Instant.ofEpochSecond(response.battleAt()))
-                .battleType(response.battleType())
-                .gameVersion(response.gameVersion())
-                .stageId(response.stageId())
+                .battleId(replay.battleId())
+                .battleAt(replay.battleAt())
+                .battleType(replay.battleType())
+                .gameVersion(replay.gameVersion())
+                .stageId(replay.stageId())
                 .build();
     }
 
@@ -36,5 +37,17 @@ public class ReplayMapper {
                 .rounds(replayPlayer.rounds())
                 .winner(replayPlayer.winner())
                 .build();
+    }
+
+    public Replay toReplay(WankReplayResponse response) {
+        return new Replay(
+                response.battleId(),
+                Instant.ofEpochSecond(response.battleAt()),
+                response.battleType(),
+                response.gameVersion(),
+                response.stageId(),
+                response.player1(),
+                response.player2()
+        );
     }
 }

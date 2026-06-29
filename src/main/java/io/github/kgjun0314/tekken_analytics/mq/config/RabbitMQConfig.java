@@ -1,33 +1,33 @@
 package io.github.kgjun0314.tekken_analytics.mq.config;
 
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
-    public static final String REPLAY_QUEUE = "replay.queue";
+    public static final String REPLAY_EXCHANGE = "replay.exchange";
+    public static final String REPLAY_QUEUE = "replay.persist.queue";
+    public static final String REPLAY_ROUTING_KEY = "replay.persist";
 
     @Bean
-    public Queue replayQueue() {
+    DirectExchange replayExchange() {
+        return new DirectExchange(REPLAY_EXCHANGE);
+    }
+
+    @Bean
+    Queue replayQueue() {
         return new Queue(REPLAY_QUEUE);
     }
 
     @Bean
-    public JacksonJsonMessageConverter jacksonJsonMessageConverter() {
-        return new JacksonJsonMessageConverter();
-    }
-
-    @Bean
-    RabbitTemplate rabbitTemplate(
-            ConnectionFactory connectionFactory,
-            JacksonJsonMessageConverter converter
-    ) {
-        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(converter);
-        return rabbitTemplate;
+    Binding replayBinding() {
+        return BindingBuilder
+                .bind(replayQueue())
+                .to(replayExchange())
+                .with(REPLAY_ROUTING_KEY);
     }
 }
