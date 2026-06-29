@@ -1,4 +1,4 @@
-package io.github.kgjun0314.tekken_analytics.replay.dto;
+package io.github.kgjun0314.tekken_analytics.replay.model;
 
 public record ReplayPlayer(
 

@@ -1,7 +1,6 @@
 package io.github.kgjun0314.tekken_analytics.mq.producer;
 
 import io.github.kgjun0314.tekken_analytics.mq.config.RabbitMQConfig;
-import io.github.kgjun0314.tekken_analytics.replay.event.ReplayCollectedEvent;
 import io.github.kgjun0314.tekken_analytics.replay.model.Replay;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

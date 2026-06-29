@@ -1,7 +1,5 @@
 package io.github.kgjun0314.tekken_analytics.replay.model;
 
-import io.github.kgjun0314.tekken_analytics.replay.dto.ReplayPlayer;
-
 import java.time.Instant;
 
 public record Replay(

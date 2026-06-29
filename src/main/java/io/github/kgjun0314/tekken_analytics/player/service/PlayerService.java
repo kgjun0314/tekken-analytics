@@ -2,7 +2,7 @@ package io.github.kgjun0314.tekken_analytics.player.service;
 
 import io.github.kgjun0314.tekken_analytics.player.entity.Player;
 import io.github.kgjun0314.tekken_analytics.player.repository.PlayerRepository;
-import io.github.kgjun0314.tekken_analytics.replay.dto.ReplayPlayer;
+import io.github.kgjun0314.tekken_analytics.replay.model.ReplayPlayer;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

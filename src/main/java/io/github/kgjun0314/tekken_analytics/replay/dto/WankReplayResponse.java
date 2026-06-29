@@ -2,6 +2,7 @@ package io.github.kgjun0314.tekken_analytics.replay.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.kgjun0314.tekken_analytics.replay.model.ReplayPlayer;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record WankReplayResponse(
