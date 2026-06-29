@@ -1,5 +1,6 @@
 package io.github.kgjun0314.tekken_analytics.collector.service;
 
+import io.github.kgjun0314.tekken_analytics.mq.producer.ReplayProducer;
 import io.github.kgjun0314.tekken_analytics.replay.client.WankApiClient;
 import io.github.kgjun0314.tekken_analytics.replay.dto.WankReplayResponse;
 import io.github.kgjun0314.tekken_analytics.replay.service.ReplayPersistenceService;
@@ -13,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReplayCollectorService {
     private final WankApiClient client;
-    private final ReplayPersistenceService replayPersistenceService;
+    private final ReplayProducer replayProducer;
 
     @Transactional
     public void collect() {
@@ -22,7 +23,7 @@ public class ReplayCollectorService {
                 client.getLatestReplays();
 
         responses.forEach(
-                replayPersistenceService::save
+                replayProducer::publish
         );
     }
 }
