@@ -57,31 +57,22 @@ public enum Character {
         this.displayName = displayName;
     }
 
-    public int id() {
+    public int getId() {
         return id;
     }
 
-    public String displayName() {
+    public String getDisplayName() {
         return displayName;
     }
 
     private static final Map<Integer, Character> CACHE =
             Arrays.stream(values())
                     .collect(Collectors.toUnmodifiableMap(
-                            Character::id,
+                            Character::getId,
                             Function.identity()
                     ));
 
     public static Character fromId(int id) {
-
-        Character character = CACHE.get(id);
-
-        if (character == null) {
-            throw new IllegalArgumentException(
-                    "Unknown character id : " + id
-            );
-        }
-
-        return character;
+        return CACHE.getOrDefault(id, UNKNOWN);
     }
 }
