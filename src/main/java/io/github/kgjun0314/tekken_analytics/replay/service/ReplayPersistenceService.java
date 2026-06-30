@@ -1,5 +1,6 @@
 package io.github.kgjun0314.tekken_analytics.replay.service;
 
+import io.github.kgjun0314.tekken_analytics.character.service.CharacterStatsService;
 import io.github.kgjun0314.tekken_analytics.player.entity.Player;
 import io.github.kgjun0314.tekken_analytics.player.service.PlayerService;
 import io.github.kgjun0314.tekken_analytics.replay.model.ReplayPlayer;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ReplayPersistenceService {
     private final PlayerService playerService;
+    private final CharacterStatsService characterStatsService;
     private final ReplayMapper replayMapper;
     private final MatchRepository matchRepository;
     private final MatchParticipantRepository matchParticipantRepository;
@@ -43,5 +45,8 @@ public class ReplayPersistenceService {
         matchParticipantRepository.save(
                 replayMapper.toParticipant(match, player2, p2)
         );
+
+        characterStatsService.update(p1);
+        characterStatsService.update(p2);
     }
 }
