@@ -39,7 +39,7 @@ public class CharacterStatsService {
         return repository.findAll()
                 .stream()
                 .map(stats -> new CharacterStatsResponse(
-                        Character.fromId(stats.getCharacterId()).displayName(),
+                        Character.fromId(stats.getCharacterId()).getDisplayName(),
                         stats.getMatches(),
                         stats.getWins(),
                         stats.winRate()

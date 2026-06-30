@@ -1,10 +1,13 @@
 package io.github.kgjun0314.tekken_analytics.character.model;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Getter
 public enum Character {
     UNKNOWN(-1, "Unknown"),
     PAUL(0, "Paul"),
@@ -55,14 +58,6 @@ public enum Character {
     Character(int id, String displayName) {
         this.id = id;
         this.displayName = displayName;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getDisplayName() {
-        return displayName;
     }
 
     private static final Map<Integer, Character> CACHE =

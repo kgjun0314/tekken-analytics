@@ -55,9 +55,9 @@ public class PlayerQueryService {
                         p.battleId(),
                         p.battleAt(),
                         Character.fromId(p.characterId())
-                                .displayName(),
+                                .getDisplayName(),
                         Character.fromId(p.opponentCharacterId())
-                                .displayName(),
+                                .getDisplayName(),
                         p.opponentNickname(),
                         p.winner()
                 )
