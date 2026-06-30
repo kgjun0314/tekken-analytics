@@ -1,5 +1,7 @@
 package io.github.kgjun0314.tekken_analytics.player.query;
 
+import io.github.kgjun0314.tekken_analytics.character.model.Character;
+import io.github.kgjun0314.tekken_analytics.player.dto.PlayerMatchProjection;
 import io.github.kgjun0314.tekken_analytics.player.dto.PlayerMatchResponse;
 import io.github.kgjun0314.tekken_analytics.player.dto.PlayerSummaryResponse;
 import io.github.kgjun0314.tekken_analytics.player.entity.Player;
@@ -43,10 +45,22 @@ public class PlayerQueryService {
             Long userId,
             Pageable pageable
     ) {
-
-        return participantRepository.findPlayerMatches(
+        Page<PlayerMatchProjection> page = participantRepository.findPlayerMatches(
                 userId,
                 pageable
+        );
+
+        return page.map(p ->
+                new PlayerMatchResponse(
+                        p.battleId(),
+                        p.battleAt(),
+                        Character.fromId(p.characterId())
+                                .displayName(),
+                        Character.fromId(p.opponentCharacterId())
+                                .displayName(),
+                        p.opponentNickname(),
+                        p.winner()
+                )
         );
     }
 }

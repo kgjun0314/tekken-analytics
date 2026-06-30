@@ -1,6 +1,6 @@
 package io.github.kgjun0314.tekken_analytics.replay.repository;
 
-import io.github.kgjun0314.tekken_analytics.player.dto.PlayerMatchResponse;
+import io.github.kgjun0314.tekken_analytics.player.dto.PlayerMatchProjection;
 import io.github.kgjun0314.tekken_analytics.player.entity.Player;
 import io.github.kgjun0314.tekken_analytics.replay.entity.MatchParticipant;
 import org.springframework.data.domain.Page;
@@ -13,7 +13,7 @@ public interface MatchParticipantRepository extends JpaRepository<MatchParticipa
     long countByPlayer(Player player);
     long countByPlayerAndWinnerTrue(Player player);
     @Query("""
-    SELECT new io.github.kgjun0314.tekken_analytics.player.dto.PlayerMatchResponse(
+    SELECT new io.github.kgjun0314.tekken_analytics.player.dto.PlayerMatchProjection(
         m.battleId,
         m.battleAt,
         mp.characterId,
@@ -29,7 +29,7 @@ public interface MatchParticipantRepository extends JpaRepository<MatchParticipa
     WHERE mp.player.userId = :userId
     ORDER BY m.battleAt DESC
     """)
-    Page<PlayerMatchResponse> findPlayerMatches(
+    Page<PlayerMatchProjection> findPlayerMatches(
             @Param("userId") Long userId,
             Pageable pageable
     );

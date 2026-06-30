@@ -2,6 +2,7 @@ package io.github.kgjun0314.tekken_analytics.character.service;
 
 import io.github.kgjun0314.tekken_analytics.character.dto.CharacterStatsResponse;
 import io.github.kgjun0314.tekken_analytics.character.entity.CharacterStats;
+import io.github.kgjun0314.tekken_analytics.character.model.Character;
 import io.github.kgjun0314.tekken_analytics.character.repository.CharacterStatsRepository;
 import io.github.kgjun0314.tekken_analytics.replay.model.ReplayPlayer;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ public class CharacterStatsService {
         return repository.findAll()
                 .stream()
                 .map(stats -> new CharacterStatsResponse(
-                        stats.getCharacterId(),
+                        Character.fromId(stats.getCharacterId()).displayName(),
                         stats.getMatches(),
                         stats.getWins(),
                         stats.winRate()

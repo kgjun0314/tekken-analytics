@@ -2,11 +2,11 @@ package io.github.kgjun0314.tekken_analytics.player.dto;
 
 import java.time.Instant;
 
-public record PlayerMatchResponse(
+public record PlayerMatchProjection(
         String battleId,
         Instant battleAt,
-        String character,
-        String opponentCharacter,
+        Integer characterId,
+        Integer opponentCharacterId,
         String opponentNickname,
         boolean winner
 ) {
