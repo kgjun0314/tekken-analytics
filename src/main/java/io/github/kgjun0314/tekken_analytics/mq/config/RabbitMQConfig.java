@@ -13,8 +13,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
     public static final String EXCHANGE = "replay.exchange";
-    public static final String QUEUE = "replay.persist.queue";
-    public static final String ROUTING_KEY = "replay.persist";
+
+    public static final String PERSIST_QUEUE = "replay.persist.queue";
+    public static final String CHARACTER_QUEUE = "replay.character.queue";
+
+    public static final String PERSIST_ROUTING_KEY = "replay.persist";
+    public static final String CHARACTER_ROUTING_KEY = "replay.character";
 
     @Bean
     DirectExchange replayExchange() {
@@ -23,14 +27,24 @@ public class RabbitMQConfig {
 
     @Bean
     Queue replayQueue() {
-        return new Queue(QUEUE, true);
+        return new Queue(PERSIST_QUEUE, true);
     }
+
+    @Bean
+    Queue characterQueue() {return new Queue(CHARACTER_QUEUE, true);}
 
     @Bean
     Binding replayBinding() {
         return BindingBuilder.bind(replayQueue())
                 .to(replayExchange())
-                .with(ROUTING_KEY);
+                .with(PERSIST_ROUTING_KEY);
+    }
+
+    @Bean
+    Binding characterBinding() {
+        return BindingBuilder.bind(characterQueue())
+                .to(replayExchange())
+                .with(CHARACTER_ROUTING_KEY);
     }
 
     @Bean

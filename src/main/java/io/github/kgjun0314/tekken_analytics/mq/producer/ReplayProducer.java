@@ -14,7 +14,13 @@ public class ReplayProducer {
     public void publish(Replay replay) {
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.EXCHANGE,
-                RabbitMQConfig.ROUTING_KEY,
+                RabbitMQConfig.PERSIST_ROUTING_KEY,
+                replay
+        );
+
+        rabbitTemplate.convertAndSend(
+                RabbitMQConfig.EXCHANGE,
+                RabbitMQConfig.CHARACTER_ROUTING_KEY,
                 replay
         );
     }
