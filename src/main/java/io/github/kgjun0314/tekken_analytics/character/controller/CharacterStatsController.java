@@ -1,5 +1,6 @@
 package io.github.kgjun0314.tekken_analytics.character.controller;
 
+import io.github.kgjun0314.tekken_analytics.character.dto.CharacterRankingResponse;
 import io.github.kgjun0314.tekken_analytics.character.dto.CharacterStatsResponse;
 import io.github.kgjun0314.tekken_analytics.character.service.CharacterStatsService;
 import lombok.RequiredArgsConstructor;
@@ -16,5 +17,10 @@ public class CharacterStatsController {
     @GetMapping("/characters")
     public List<CharacterStatsResponse> findALl() {
         return service.findAll();
+    }
+
+    @GetMapping("/ranking")
+    public List<CharacterRankingResponse> ranking() {
+        return service.getRanking();
     }
 }
