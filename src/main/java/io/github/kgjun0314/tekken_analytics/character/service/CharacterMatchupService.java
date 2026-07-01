@@ -47,14 +47,25 @@ public class CharacterMatchupService {
 
     @Transactional(readOnly = true)
     public List<CharacterMatchupResponse> findAll(
-            Character character
+            Character character,
+            Long minMatches
     ) {
 
-        return repository
-                .findByCharacterIdOrderByMatchesDesc(
-                        character.getId()
-                )
-                .stream()
+        List<CharacterMatchup> matchups;
+
+        if (minMatches == null) {
+            matchups = repository.findByCharacterIdOrderByMatchesDesc(
+                    character.getId()
+            );
+        } else {
+            matchups = repository
+                    .findByCharacterIdAndMatchesGreaterThanEqualOrderByMatchesDesc(
+                            character.getId(),
+                            minMatches
+                    );
+        }
+
+        return matchups.stream()
                 .map(matchup -> new CharacterMatchupResponse(
 
                         Character.fromId(

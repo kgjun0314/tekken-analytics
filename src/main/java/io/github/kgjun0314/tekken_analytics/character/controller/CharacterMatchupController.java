@@ -4,10 +4,7 @@ import io.github.kgjun0314.tekken_analytics.character.dto.CharacterMatchupRespon
 import io.github.kgjun0314.tekken_analytics.character.service.CharacterMatchupService;
 import io.github.kgjun0314.tekken_analytics.character.model.Character;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,8 +17,14 @@ public class CharacterMatchupController {
 
     @GetMapping("/{character}/matchups")
     public List<CharacterMatchupResponse> findMatchups(
-            @PathVariable Character character
+            @PathVariable Character character,
+            @RequestParam(required = false)
+            Long minMatches
     ) {
-        return characterMatchupService.findAll(character);
+
+        return characterMatchupService.findAll(
+                character,
+                minMatches
+        );
     }
 }

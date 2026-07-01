@@ -15,4 +15,9 @@ public interface CharacterMatchupRepository extends JpaRepository<CharacterMatch
     List<CharacterMatchup> findByCharacterIdOrderByMatchesDesc(
             Integer characterId
     );
+
+    List<CharacterMatchup> findByCharacterIdAndMatchesGreaterThanEqualOrderByMatchesDesc(
+            Integer characterId,
+            Long matches
+    );
 }
