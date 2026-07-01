@@ -1,6 +1,7 @@
 package io.github.kgjun0314.tekken_analytics.character.controller;
 
 import io.github.kgjun0314.tekken_analytics.character.dto.CharacterMatchupResponse;
+import io.github.kgjun0314.tekken_analytics.character.model.CharacterMatchupSort;
 import io.github.kgjun0314.tekken_analytics.character.service.CharacterMatchupService;
 import io.github.kgjun0314.tekken_analytics.character.model.Character;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +20,15 @@ public class CharacterMatchupController {
     public List<CharacterMatchupResponse> findMatchups(
             @PathVariable Character character,
             @RequestParam(required = false)
-            Long minMatches
+            Long minMatches,
+            @RequestParam(defaultValue = "MATCHES")
+            CharacterMatchupSort sort
     ) {
 
         return characterMatchupService.findAll(
                 character,
-                minMatches
+                minMatches,
+                sort
         );
     }
 }
