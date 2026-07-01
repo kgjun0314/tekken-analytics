@@ -12,53 +12,70 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
+
     public static final String EXCHANGE = "replay.exchange";
 
     public static final String PERSIST_QUEUE = "replay.persist.queue";
-    public static final String CHARACTER_QUEUE = "replay.character.queue";
+    public static final String CHARACTER_STATS_QUEUE = "replay.character-stats.queue";
+    public static final String CHARACTER_MATCHUP_QUEUE = "replay.character-matchup.queue";
 
     public static final String PERSIST_ROUTING_KEY = "replay.persist";
-    public static final String CHARACTER_ROUTING_KEY = "replay.character";
+    public static final String CHARACTER_STATS_ROUTING_KEY = "replay.character.stats";
+    public static final String CHARACTER_MATCHUP_ROUTING_KEY = "replay.character.matchup";
 
     @Bean
-    DirectExchange replayExchange() {
+    public DirectExchange replayExchange() {
         return new DirectExchange(EXCHANGE);
     }
 
     @Bean
-    Queue replayQueue() {
+    public Queue persistQueue() {
         return new Queue(PERSIST_QUEUE, true);
     }
 
     @Bean
-    Queue characterQueue() {return new Queue(CHARACTER_QUEUE, true);}
+    public Queue characterStatsQueue() {
+        return new Queue(CHARACTER_STATS_QUEUE, true);
+    }
 
     @Bean
-    Binding replayBinding() {
-        return BindingBuilder.bind(replayQueue())
+    public Queue characterMatchupQueue() {
+        return new Queue(CHARACTER_MATCHUP_QUEUE, true);
+    }
+
+    @Bean
+    public Binding persistBinding() {
+        return BindingBuilder.bind(persistQueue())
                 .to(replayExchange())
                 .with(PERSIST_ROUTING_KEY);
     }
 
     @Bean
-    Binding characterBinding() {
-        return BindingBuilder.bind(characterQueue())
+    public Binding characterStatsBinding() {
+        return BindingBuilder.bind(characterStatsQueue())
                 .to(replayExchange())
-                .with(CHARACTER_ROUTING_KEY);
+                .with(CHARACTER_STATS_ROUTING_KEY);
     }
 
     @Bean
-    JacksonJsonMessageConverter jackson2JsonMessageConverter() {
+    public Binding characterMatchupBinding() {
+        return BindingBuilder.bind(characterMatchupQueue())
+                .to(replayExchange())
+                .with(CHARACTER_MATCHUP_ROUTING_KEY);
+    }
+
+    @Bean
+    public JacksonJsonMessageConverter jacksonJsonMessageConverter() {
         return new JacksonJsonMessageConverter();
     }
 
     @Bean
-    RabbitTemplate rabbitTemplate(
+    public RabbitTemplate rabbitTemplate(
             ConnectionFactory connectionFactory,
             JacksonJsonMessageConverter converter
     ) {
-        RabbitTemplate template = new RabbitTemplate(connectionFactory);
-        template.setMessageConverter(converter);
-        return template;
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(converter);
+        return rabbitTemplate;
     }
 }

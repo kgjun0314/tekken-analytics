@@ -13,7 +13,7 @@ public class CharacterStatsConsumer {
     private final CharacterStatsService service;
 
     @RabbitListener(
-            queues = RabbitMQConfig.CHARACTER_QUEUE
+            queues = RabbitMQConfig.CHARACTER_STATS_QUEUE
     )
     public void consume(Replay replay) {
 

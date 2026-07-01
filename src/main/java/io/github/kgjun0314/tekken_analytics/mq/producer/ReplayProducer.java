@@ -20,7 +20,13 @@ public class ReplayProducer {
 
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.EXCHANGE,
-                RabbitMQConfig.CHARACTER_ROUTING_KEY,
+                RabbitMQConfig.CHARACTER_STATS_ROUTING_KEY,
+                replay
+        );
+
+        rabbitTemplate.convertAndSend(
+                RabbitMQConfig.EXCHANGE,
+                RabbitMQConfig.CHARACTER_MATCHUP_ROUTING_KEY,
                 replay
         );
     }
