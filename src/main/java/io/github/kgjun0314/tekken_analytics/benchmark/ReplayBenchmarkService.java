@@ -1,6 +1,10 @@
 package io.github.kgjun0314.tekken_analytics.benchmark;
 
+import jakarta.persistence.EntityManagerFactory;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.SessionFactory;
+import org.hibernate.stat.Statistics;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
@@ -9,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ReplayBenchmarkService {
 
     private static final int TOTAL_PIPELINES = 3;
@@ -22,6 +27,8 @@ public class ReplayBenchmarkService {
 
     private volatile int totalReplayCount;
 
+    private final EntityManagerFactory entityManagerFactory;
+
     public synchronized void start(int totalReplayCount) {
 
         progress.clear();
@@ -32,6 +39,13 @@ public class ReplayBenchmarkService {
         if (stopWatch.isRunning()) {
             stopWatch.stop();
         }
+
+        SessionFactory sessionFactory =
+                entityManagerFactory.unwrap(SessionFactory.class);
+
+        Statistics statistics = sessionFactory.getStatistics();
+
+        statistics.clear();
 
         stopWatch.start();
 
@@ -78,5 +92,22 @@ public class ReplayBenchmarkService {
         log.info("Throughput : {} replay/sec",
                 String.format("%.2f", throughput));
         log.info("========================================");
+
+        SessionFactory sessionFactory =
+                entityManagerFactory.unwrap(SessionFactory.class);
+
+        Statistics statistics = sessionFactory.getStatistics();
+
+        log.info("");
+        log.info("Hibernate Statistics");
+        log.info("----------------------------------------");
+        log.info("Prepare Statements : {}", statistics.getPrepareStatementCount());
+        log.info("Entity Inserts     : {}", statistics.getEntityInsertCount());
+        log.info("Entity Updates     : {}", statistics.getEntityUpdateCount());
+        log.info("Entity Deletes     : {}", statistics.getEntityDeleteCount());
+        log.info("Entity Loads       : {}", statistics.getEntityLoadCount());
+        log.info("Entity Fetches     : {}", statistics.getEntityFetchCount());
+        log.info("Flush Count        : {}", statistics.getFlushCount());
+        log.info("----------------------------------------");
     }
 }
