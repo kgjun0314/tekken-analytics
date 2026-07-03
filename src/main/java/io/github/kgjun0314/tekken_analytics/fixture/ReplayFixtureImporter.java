@@ -1,5 +1,6 @@
 package io.github.kgjun0314.tekken_analytics.fixture;
 
+import io.github.kgjun0314.tekken_analytics.benchmark.ReplayBenchmarkService;
 import io.github.kgjun0314.tekken_analytics.mq.producer.ReplayProducer;
 import io.github.kgjun0314.tekken_analytics.replay.dto.WankReplayResponse;
 import io.github.kgjun0314.tekken_analytics.replay.mapper.ReplayMapper;
@@ -25,6 +26,7 @@ public class ReplayFixtureImporter implements CommandLineRunner {
     private final ObjectMapper objectMapper;
     private final ReplayMapper replayMapper;
     private final ReplayProducer replayProducer;
+    private final ReplayBenchmarkService benchmarkService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -43,24 +45,21 @@ public class ReplayFixtureImporter implements CommandLineRunner {
 
         log.info("Loaded {} replay fixtures.", responses.size());
 
-        StopWatch stopWatch = new StopWatch("Replay Fixture Import");
+//        StopWatch stopWatch = new StopWatch("Replay Fixture Import");
 
-        stopWatch.start();
+//        stopWatch.start();
 
-        for (WankReplayResponse response : responses) {
-            try {
-                replayProducer.publish(replayMapper.toReplay(response));
-            } catch (Exception e) {
-                log.error("Publish failed. battleId={}", response.battleId(), e);
-                break;
-            }
-        }
+        benchmarkService.start(responses.size());
 
-        stopWatch.stop();
+        responses.stream()
+                .map(replayMapper::toReplay)
+                .forEach(replayProducer::publish);
 
-        log.info("Replay fixture import completed.");
-        log.info("Published {} replay events.", responses.size());
-        log.info("Elapsed Time : {} ms", stopWatch.getTotalTimeMillis());
-        log.info("Elapsed Time : {} sec", stopWatch.getTotalTimeSeconds());
+//        stopWatch.stop();
+
+//        log.info("Replay fixture import completed.");
+//        log.info("Published {} replay events.", responses.size());
+//        log.info("Elapsed Time : {} ms", stopWatch.getTotalTimeMillis());
+//        log.info("Elapsed Time : {} sec", stopWatch.getTotalTimeSeconds());
     }
 }

@@ -1,5 +1,6 @@
 package io.github.kgjun0314.tekken_analytics.mq.consumer;
 
+import io.github.kgjun0314.tekken_analytics.benchmark.ReplayBenchmarkService;
 import io.github.kgjun0314.tekken_analytics.character.service.CharacterMatchupService;
 import io.github.kgjun0314.tekken_analytics.mq.config.RabbitMQConfig;
 import io.github.kgjun0314.tekken_analytics.replay.model.Replay;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class CharacterMatchupConsumer {
 
     private final CharacterMatchupService characterMatchupService;
+    private final ReplayBenchmarkService benchmarkService;
 
     @RabbitListener(queues = RabbitMQConfig.CHARACTER_MATCHUP_QUEUE)
     public void consume(Replay replay) {
@@ -24,5 +26,7 @@ public class CharacterMatchupConsumer {
         );
 
         characterMatchupService.update(replay);
+
+        benchmarkService.complete(replay.battleId());
     }
 }
