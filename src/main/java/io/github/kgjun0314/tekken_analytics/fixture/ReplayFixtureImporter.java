@@ -9,6 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
@@ -29,29 +30,37 @@ public class ReplayFixtureImporter implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         ClassPathResource resource =
-                new ClassPathResource(
-                        "fixtures/response.json"
-                );
+                new ClassPathResource("fixtures/response.json");
 
-        try (InputStream is = resource.getInputStream()) {
+        List<WankReplayResponse> responses;
 
-            List<WankReplayResponse> responses =
-                    objectMapper.readValue(
-                            is,
-                            new TypeReference<>() {
-                            }
-                    );
-
-            log.info(
-                    "Loaded {} replay fixtures.",
-                    responses.size()
+        try (InputStream inputStream = resource.getInputStream()) {
+            responses = objectMapper.readValue(
+                    inputStream,
+                    new TypeReference<>() {}
             );
-
-            responses.stream()
-                    .map(replayMapper::toReplay)
-                    .forEach(replayProducer::publish);
-
-            log.info("Replay fixture import completed.");
         }
+
+        log.info("Loaded {} replay fixtures.", responses.size());
+
+        StopWatch stopWatch = new StopWatch("Replay Fixture Import");
+
+        stopWatch.start();
+
+        for (WankReplayResponse response : responses) {
+            try {
+                replayProducer.publish(replayMapper.toReplay(response));
+            } catch (Exception e) {
+                log.error("Publish failed. battleId={}", response.battleId(), e);
+                break;
+            }
+        }
+
+        stopWatch.stop();
+
+        log.info("Replay fixture import completed.");
+        log.info("Published {} replay events.", responses.size());
+        log.info("Elapsed Time : {} ms", stopWatch.getTotalTimeMillis());
+        log.info("Elapsed Time : {} sec", stopWatch.getTotalTimeSeconds());
     }
 }

@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ReplayPersistenceService {
     private final PlayerService playerService;
-    private final CharacterStatsService characterStatsService;
     private final ReplayMapper replayMapper;
     private final MatchRepository matchRepository;
     private final MatchParticipantRepository matchParticipantRepository;
@@ -45,8 +44,5 @@ public class ReplayPersistenceService {
         matchParticipantRepository.save(
                 replayMapper.toParticipant(match, player2, p2)
         );
-
-        characterStatsService.update(p1);
-        characterStatsService.update(p2);
     }
 }
