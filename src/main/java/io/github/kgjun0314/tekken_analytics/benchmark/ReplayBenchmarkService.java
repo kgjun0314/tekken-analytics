@@ -28,8 +28,10 @@ public class ReplayBenchmarkService {
     private volatile int totalReplayCount;
 
     private final EntityManagerFactory entityManagerFactory;
+    private final RepositoryMetrics repositoryMetrics;
 
     public synchronized void start(int totalReplayCount) {
+        repositoryMetrics.clear();
 
         progress.clear();
         processed.set(0);
@@ -109,5 +111,7 @@ public class ReplayBenchmarkService {
         log.info("Entity Fetches     : {}", statistics.getEntityFetchCount());
         log.info("Flush Count        : {}", statistics.getFlushCount());
         log.info("----------------------------------------");
+
+        repositoryMetrics.print();
     }
 }
