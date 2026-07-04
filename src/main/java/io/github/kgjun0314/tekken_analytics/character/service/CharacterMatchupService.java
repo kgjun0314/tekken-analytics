@@ -31,20 +31,11 @@ public class CharacterMatchupService {
             ReplayPlayer me,
             ReplayPlayer opponent
     ) {
-
-        CharacterMatchup matchup = repository
-                .findByCharacterIdAndOpponentCharacterId(
-                        me.characterId(),
-                        opponent.characterId()
-                )
-                .orElseGet(() -> repository.save(
-                        CharacterMatchup.create(
-                                me.characterId(),
-                                opponent.characterId()
-                        )
-                ));
-
-        matchup.increase(me.winner());
+        repository.upsert(
+                me.characterId(),
+                opponent.characterId(),
+                me.winner() ? 1L : 0L
+        );
     }
 
     @Transactional(readOnly = true)
