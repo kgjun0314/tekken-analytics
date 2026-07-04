@@ -20,24 +20,10 @@ public class CharacterStatsService {
     private final CharacterStatsRepository repository;
 
     public void update(ReplayPlayer player) {
-        int updated =
-                repository.increase(
-                        player.characterId(),
-                        player.winner() ? 1L : 0L
-                );
-
-        if (updated == 1) {
-            return;
-        }
-
-        CharacterStats stats =
-                CharacterStats.builder()
-                        .characterId(player.characterId())
-                        .matches(1L)
-                        .wins(player.winner() ? 1L : 0L)
-                        .build();
-
-        repository.save(stats);
+        repository.upsert(
+                player.characterId(),
+                player.winner() ? 1L : 0L
+        );
     }
 
     @Transactional(readOnly = true)

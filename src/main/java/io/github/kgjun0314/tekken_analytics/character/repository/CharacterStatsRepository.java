@@ -11,15 +11,26 @@ import java.util.List;
 public interface CharacterStatsRepository extends JpaRepository<CharacterStats, Integer> {
     List<CharacterStats> findAllByOrderByMatchesDesc();
     @Modifying
-    @Query("""
-    update CharacterStats cs
-    set
-        cs.matches = cs.matches + 1,
-        cs.wins = cs.wins + :win
-    where
-        cs.characterId = :characterId
-    """)
-    int increase(
+    @Query(
+        value = """
+                INSERT INTO character_stats (
+                    character_id,
+                    matches,
+                    wins
+                )
+                VALUES (
+                    :characterId,
+                    1,
+                    :win
+                )
+                ON CONFLICT (character_id)
+                DO UPDATE SET
+                    matches = character_stats.matches + 1,
+                    wins = character_stats.wins + EXCLUDED.wins
+                """,
+        nativeQuery = true
+    )
+    void upsert(
             @Param("characterId") Integer characterId,
             @Param("win") Long win
     );
