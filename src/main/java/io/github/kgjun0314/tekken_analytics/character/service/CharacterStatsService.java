@@ -22,7 +22,7 @@ public class CharacterStatsService {
     public void update(ReplayPlayer player) {
         repository.upsert(
                 player.characterId(),
-                player.winner() ? 1L : 0L
+                player.winner()
         );
     }
 

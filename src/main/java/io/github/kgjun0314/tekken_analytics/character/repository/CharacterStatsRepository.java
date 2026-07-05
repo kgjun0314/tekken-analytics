@@ -8,30 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface CharacterStatsRepository extends JpaRepository<CharacterStats, Integer> {
+public interface CharacterStatsRepository extends JpaRepository<CharacterStats, Integer>, CharacterStatsRepositoryCustom {
     List<CharacterStats> findAllByOrderByMatchesDesc();
-    @Modifying
-    @Query(
-        value = """
-                INSERT INTO character_stats (
-                    character_id,
-                    matches,
-                    wins
-                )
-                VALUES (
-                    :characterId,
-                    1,
-                    :win
-                )
-                ON CONFLICT (character_id)
-                DO UPDATE SET
-                    matches = character_stats.matches + 1,
-                    wins = character_stats.wins + EXCLUDED.wins
-                """,
-        nativeQuery = true
-    )
-    void upsert(
-            @Param("characterId") Integer characterId,
-            @Param("win") Long win
-    );
 }

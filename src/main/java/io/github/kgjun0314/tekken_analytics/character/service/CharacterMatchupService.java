@@ -34,7 +34,7 @@ public class CharacterMatchupService {
         repository.upsert(
                 me.characterId(),
                 opponent.characterId(),
-                me.winner() ? 1L : 0L
+                me.winner()
         );
     }
 

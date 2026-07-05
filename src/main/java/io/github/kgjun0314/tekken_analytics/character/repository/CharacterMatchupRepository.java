@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface CharacterMatchupRepository extends JpaRepository<CharacterMatchup, Long> {
+public interface CharacterMatchupRepository extends JpaRepository<CharacterMatchup, Long>, CharacterMatchupRepositoryCustom {
     Optional<CharacterMatchup> findByCharacterIdAndOpponentCharacterId(
             Integer characterId,
             Integer opponentCharacterId
@@ -35,38 +35,5 @@ public interface CharacterMatchupRepository extends JpaRepository<CharacterMatch
     List<CharacterMatchup> findByWinRate(
             Integer characterId,
             Long minMatches
-    );
-
-    @Modifying
-    @Query(
-            value = """
-            INSERT INTO character_matchups (
-                character_id,
-                opponent_character_id,
-                matches,
-                wins,
-                created_at,
-                updated_at
-            )
-            VALUES (
-                :characterId,
-                :opponentCharacterId,
-                1,
-                :win,
-                now(),
-                now()
-            )
-            ON CONFLICT (character_id, opponent_character_id)
-            DO UPDATE SET
-                matches = character_matchups.matches + 1,
-                wins = character_matchups.wins + EXCLUDED.wins,
-                updated_at = now()
-            """,
-            nativeQuery = true
-    )
-    void upsert(
-            @Param("characterId") Integer characterId,
-            @Param("opponentCharacterId") Integer opponentCharacterId,
-            @Param("win") Long win
     );
 }
