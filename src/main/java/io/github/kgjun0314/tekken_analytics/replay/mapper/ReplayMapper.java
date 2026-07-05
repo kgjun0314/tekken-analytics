@@ -22,23 +22,6 @@ public class ReplayMapper {
                 .build();
     }
 
-    public MatchParticipant toParticipant(
-            Match match,
-            Player player,
-            ReplayPlayer replayPlayer
-    ) {
-
-        return MatchParticipant.builder()
-                .match(match)
-                .player(player)
-                .characterId(replayPlayer.characterId())
-                .rank(replayPlayer.rank())
-                .power(replayPlayer.power())
-                .rounds(replayPlayer.rounds())
-                .winner(replayPlayer.winner())
-                .build();
-    }
-
     public Replay toReplay(WankReplayResponse response) {
         return new Replay(
                 response.battleId(),

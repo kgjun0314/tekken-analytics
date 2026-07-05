@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface MatchParticipantRepository extends JpaRepository<MatchParticipant, Long> {
+public interface MatchParticipantRepository extends JpaRepository<MatchParticipant, Long>, MatchParticipantRepositoryCustom {
     long countByPlayer(Player player);
     long countByPlayerAndWinnerTrue(Player player);
     @Query("""
