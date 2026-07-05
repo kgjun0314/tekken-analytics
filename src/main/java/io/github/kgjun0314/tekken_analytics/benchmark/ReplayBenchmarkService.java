@@ -29,8 +29,10 @@ public class ReplayBenchmarkService {
 
     private final EntityManagerFactory entityManagerFactory;
     private final RepositoryMetrics repositoryMetrics;
+    private final ServiceMetrics serviceMetrics;
 
     public synchronized void start(int totalReplayCount) {
+        serviceMetrics.clear();
         repositoryMetrics.clear();
 
         progress.clear();
@@ -113,5 +115,6 @@ public class ReplayBenchmarkService {
         log.info("----------------------------------------");
 
         repositoryMetrics.print();
+        serviceMetrics.print();
     }
 }
