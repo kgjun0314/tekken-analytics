@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.LongAdder;
 @Component
 public class ReplayPersistenceMetrics {
 
-    private final LongAdder exists = new LongAdder();
     private final LongAdder player1 = new LongAdder();
     private final LongAdder player2 = new LongAdder();
     private final LongAdder match = new LongAdder();
@@ -18,10 +17,6 @@ public class ReplayPersistenceMetrics {
     private final LongAdder participant2 = new LongAdder();
 
     private final AtomicLong count = new AtomicLong();
-
-    public void recordExists(long nanos) {
-        exists.add(nanos);
-    }
 
     public void recordPlayer1(long nanos) {
         player1.add(nanos);
@@ -48,7 +43,6 @@ public class ReplayPersistenceMetrics {
     }
 
     public void clear() {
-        exists.reset();
         player1.reset();
         player2.reset();
         match.reset();
@@ -70,7 +64,6 @@ public class ReplayPersistenceMetrics {
                 "Avg(ms)"));
         log.info("--------------------------------------------------------------------------------");
 
-        print("existsByBattleId", exists.sum(), total);
         print("player1", player1.sum(), total);
         print("player2", player2.sum(), total);
         print("match", match.sum(), total);

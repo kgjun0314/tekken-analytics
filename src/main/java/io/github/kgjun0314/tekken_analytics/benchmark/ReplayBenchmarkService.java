@@ -35,7 +35,7 @@ public class ReplayBenchmarkService {
     public synchronized void start(int totalReplayCount) {
         serviceMetrics.clear();
         repositoryMetrics.clear();
-        replayPersistenceMetrics.clear();
+//        replayPersistenceMetrics.clear();
 
         progress.clear();
         processed.set(0);
@@ -118,6 +118,6 @@ public class ReplayBenchmarkService {
 
         repositoryMetrics.print();
         serviceMetrics.print();
-        replayPersistenceMetrics.print();
+//        replayPersistenceMetrics.print();
     }
 }
