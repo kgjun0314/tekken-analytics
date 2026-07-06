@@ -14,7 +14,10 @@ public class ReplayConsumer {
     private final ReplayPersistenceService persistenceService;
     private final ReplayBenchmarkService benchmarkService;
 
-    @RabbitListener(queues = RabbitMQConfig.PERSIST_QUEUE)
+    @RabbitListener(
+            queues = RabbitMQConfig.PERSIST_QUEUE,
+            containerFactory = "rabbitListenerContainerFactory"
+    )
     public void consume(Replay replay) {
         persistenceService.save(replay);
         benchmarkService.complete(replay.battleId());

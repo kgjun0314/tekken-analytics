@@ -15,7 +15,8 @@ public class CharacterStatsConsumer {
     private final ReplayBenchmarkService benchmarkService;
 
     @RabbitListener(
-            queues = RabbitMQConfig.CHARACTER_STATS_QUEUE
+            queues = RabbitMQConfig.CHARACTER_STATS_QUEUE,
+            containerFactory = "rabbitListenerContainerFactory"
     )
     public void consume(Replay replay) {
 

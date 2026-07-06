@@ -6,6 +6,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/tekken
     username: postgres
     password: 4904
+    hikari:
+      maximum-pool-size: 16
+      minimum-idle: 8
+      auto-commit: false
 
   jpa:
     hibernate:
@@ -21,4 +25,7 @@ spring:
   rabbitmq:
     listener:
       simple:
+        concurrency: 1
+        max-concurrency: 1
+        prefetch: 50
         default-requeue-rejected: false

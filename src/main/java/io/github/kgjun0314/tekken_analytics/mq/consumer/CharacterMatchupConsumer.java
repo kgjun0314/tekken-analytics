@@ -17,13 +17,11 @@ public class CharacterMatchupConsumer {
     private final CharacterMatchupService characterMatchupService;
     private final ReplayBenchmarkService benchmarkService;
 
-    @RabbitListener(queues = RabbitMQConfig.CHARACTER_MATCHUP_QUEUE)
+    @RabbitListener(
+            queues = RabbitMQConfig.CHARACTER_MATCHUP_QUEUE,
+            containerFactory = "rabbitListenerContainerFactory"
+    )
     public void consume(Replay replay) {
-
-        log.debug(
-                "Character matchup event received. battleId={}",
-                replay.battleId()
-        );
 
         characterMatchupService.update(replay);
 

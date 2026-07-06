@@ -23,8 +23,35 @@ public class CharacterMatchupService {
 
     public void update(Replay replay) {
 
-        update(replay.player1(), replay.player2());
-        update(replay.player2(), replay.player1());
+        ReplayPlayer p1 = replay.player1();
+        ReplayPlayer p2 = replay.player2();
+
+        if (compare(p1, p2) <= 0) {
+            update(p1, p2);
+            update(p2, p1);
+        } else {
+            update(p2, p1);
+            update(p1, p2);
+        }
+    }
+
+    private int compare(
+            ReplayPlayer left,
+            ReplayPlayer right
+    ) {
+        int result = Integer.compare(
+                left.characterId(),
+                right.characterId()
+        );
+
+        if (result != 0) {
+            return result;
+        }
+
+        return Long.compare(
+                left.userId(),
+                right.userId()
+        );
     }
 
     private void update(
