@@ -4,6 +4,7 @@ public interface CharacterMatchupRepositoryCustom {
     void upsert(
             Integer characterId,
             Integer opponentCharacterId,
-            boolean winner
+            long matches,
+            long wins
     );
 }

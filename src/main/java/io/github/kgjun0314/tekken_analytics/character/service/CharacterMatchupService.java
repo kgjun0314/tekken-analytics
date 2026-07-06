@@ -21,49 +21,49 @@ public class CharacterMatchupService {
 
     private final CharacterMatchupRepository repository;
 
-    public void update(Replay replay) {
+//    public void update(Replay replay) {
+//
+//        ReplayPlayer p1 = replay.player1();
+//        ReplayPlayer p2 = replay.player2();
+//
+//        if (compare(p1, p2) <= 0) {
+//            update(p1, p2);
+//            update(p2, p1);
+//        } else {
+//            update(p2, p1);
+//            update(p1, p2);
+//        }
+//    }
+//
+//    private int compare(
+//            ReplayPlayer left,
+//            ReplayPlayer right
+//    ) {
+//        int result = Integer.compare(
+//                left.characterId(),
+//                right.characterId()
+//        );
+//
+//        if (result != 0) {
+//            return result;
+//        }
+//
+//        return Long.compare(
+//                left.userId(),
+//                right.userId()
+//        );
+//    }
 
-        ReplayPlayer p1 = replay.player1();
-        ReplayPlayer p2 = replay.player2();
-
-        if (compare(p1, p2) <= 0) {
-            update(p1, p2);
-            update(p2, p1);
-        } else {
-            update(p2, p1);
-            update(p1, p2);
-        }
-    }
-
-    private int compare(
-            ReplayPlayer left,
-            ReplayPlayer right
-    ) {
-        int result = Integer.compare(
-                left.characterId(),
-                right.characterId()
-        );
-
-        if (result != 0) {
-            return result;
-        }
-
-        return Long.compare(
-                left.userId(),
-                right.userId()
-        );
-    }
-
-    private void update(
-            ReplayPlayer me,
-            ReplayPlayer opponent
-    ) {
-        repository.upsert(
-                me.characterId(),
-                opponent.characterId(),
-                me.winner()
-        );
-    }
+//    private void update(
+//            ReplayPlayer me,
+//            ReplayPlayer opponent
+//    ) {
+//        repository.upsert(
+//                me.characterId(),
+//                opponent.characterId(),
+//                me.winner()
+//        );
+//    }
 
     @Transactional(readOnly = true)
     public List<CharacterMatchupResponse> findAll(

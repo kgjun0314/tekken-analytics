@@ -15,7 +15,8 @@ public class CharacterMatchupRepositoryImpl
     public void upsert(
             Integer characterId,
             Integer opponentCharacterId,
-            boolean winner
+            long matches,
+            long wins
     ) {
 
         jdbcClient.sql("""
@@ -29,18 +30,26 @@ public class CharacterMatchupRepositoryImpl
                         updated_at
                     )
                 VALUES
-                    (?, ?, 1, ?, now(), now())
+                    (?, ?, ?, ?, now(), now())
                 ON CONFLICT
-                    (character_id, opponent_character_id)
+                    (
+                        character_id,
+                        opponent_character_id
+                    )
                 DO UPDATE SET
-                    matches = character_matchups.matches + 1,
-                    wins = character_matchups.wins + EXCLUDED.wins,
+                    matches =
+                        character_matchups.matches
+                        + EXCLUDED.matches,
+                    wins =
+                        character_matchups.wins
+                        + EXCLUDED.wins,
                     updated_at = now()
                 """)
                 .params(
                         characterId,
                         opponentCharacterId,
-                        winner ? 1 : 0
+                        matches,
+                        wins
                 )
                 .update();
     }
