@@ -15,22 +15,24 @@ public class CharacterStatsRepositoryImpl
     @Override
     public void upsert(
             Integer characterId,
-            boolean winner
+            long matches,
+            long wins
     ) {
 
         jdbcClient.sql("""
-                INSERT INTO character_stats
-                    (character_id, matches, wins)
-                VALUES
-                    (?, 1, ?)
-                ON CONFLICT (character_id)
-                DO UPDATE SET
-                    matches = character_stats.matches + 1,
-                    wins = character_stats.wins + EXCLUDED.wins
-                """)
+        INSERT INTO character_stats
+            (character_id, matches, wins)
+        VALUES
+            (?, ?, ?)
+        ON CONFLICT (character_id)
+        DO UPDATE SET
+            matches = character_stats.matches + EXCLUDED.matches,
+            wins = character_stats.wins + EXCLUDED.wins
+        """)
                 .params(
                         characterId,
-                        winner ? 1 : 0
+                        matches,
+                        wins
                 )
                 .update();
     }

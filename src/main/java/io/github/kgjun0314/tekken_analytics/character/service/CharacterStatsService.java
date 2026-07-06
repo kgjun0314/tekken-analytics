@@ -19,12 +19,12 @@ import java.util.List;
 public class CharacterStatsService {
     private final CharacterStatsRepository repository;
 
-    public void update(ReplayPlayer player) {
-        repository.upsert(
-                player.characterId(),
-                player.winner()
-        );
-    }
+//    public void update(ReplayPlayer player) {
+//        repository.upsert(
+//                player.characterId(),
+//                player.winner()
+//        );
+//    }
 
     @Transactional(readOnly = true)
     public List<CharacterStatsResponse> findAll() {
