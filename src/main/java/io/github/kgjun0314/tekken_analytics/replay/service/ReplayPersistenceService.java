@@ -52,6 +52,7 @@ public class ReplayPersistenceService {
     }
 
     public void saveAll(List<Replay> replays) {
+
         Map<Long, PlayerUpsert> players = new LinkedHashMap<>();
 
         for (Replay replay : replays) {
@@ -83,14 +84,20 @@ public class ReplayPersistenceService {
                         new ArrayList<>(players.values())
                 );
 
+        List<Match> matches =
+                replays.stream()
+                        .map(replayMapper::toMatch)
+                        .toList();
+
+        Map<String, Long> matchIds =
+                matchRepository.findOrInsertAll(matches);
+
         for (Replay replay : replays) {
 
-            Optional<Long> matchId =
-                    matchRepository.insertIfAbsent(
-                            replayMapper.toMatch(replay)
-                    );
+            Long matchId =
+                    matchIds.get(replay.battleId());
 
-            if (matchId.isEmpty()) {
+            if (matchId == null) {
                 continue;
             }
 
@@ -98,17 +105,13 @@ public class ReplayPersistenceService {
             ReplayPlayer p2 = replay.player2();
 
             Long player1Id =
-                    playerIds.get(
-                            p1.userId()
-                    );
+                    playerIds.get(p1.userId());
 
             Long player2Id =
-                    playerIds.get(
-                            p2.userId()
-                    );
+                    playerIds.get(p2.userId());
 
             matchParticipantRepository.insert(
-                    matchId.get(),
+                    matchId,
                     player1Id,
                     p1,
                     player2Id,

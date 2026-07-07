@@ -1,12 +1,14 @@
 package io.github.kgjun0314.tekken_analytics.replay.repository;
 
+import io.github.kgjun0314.tekken_analytics.replay.dto.MatchInsertResult;
 import io.github.kgjun0314.tekken_analytics.replay.entity.Match;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -44,5 +46,98 @@ public class MatchRepositoryImpl
                 )
                 .query(Long.class)
                 .optional();
+    }
+
+    @Override
+    public Map<String, Long> findOrInsertAll(
+            List<Match> matches
+    ) {
+
+        if (matches.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        StringBuilder insertSql = new StringBuilder("""
+            INSERT INTO matches
+            (
+                battle_id,
+                battle_at,
+                battle_type,
+                game_version,
+                stage_id,
+                created_at,
+                updated_at
+            )
+            VALUES
+            """);
+
+        List<Object> insertParams = new ArrayList<>();
+
+        for (int i = 0; i < matches.size(); i++) {
+
+            if (i > 0) {
+                insertSql.append(", ");
+            }
+
+            insertSql.append("""
+                (?, ?, ?, ?, ?, now(), now())
+                """);
+
+            Match match = matches.get(i);
+
+            insertParams.add(match.getBattleId());
+            insertParams.add(Timestamp.from(match.getBattleAt()));
+            insertParams.add(match.getBattleType());
+            insertParams.add(match.getGameVersion());
+            insertParams.add(match.getStageId());
+        }
+
+        insertSql.append("""
+            ON CONFLICT (battle_id)
+            DO NOTHING
+            """);
+
+        jdbcClient.sql(insertSql.toString())
+                .params(insertParams)
+                .update();
+
+        StringBuilder selectSql = new StringBuilder("""
+            SELECT
+                battle_id,
+                id
+            FROM matches
+            WHERE battle_id IN (
+            """);
+
+        List<Object> selectParams = new ArrayList<>();
+
+        for (int i = 0; i < matches.size(); i++) {
+
+            if (i > 0) {
+                selectSql.append(", ");
+            }
+
+            selectSql.append("?");
+
+            selectParams.add(matches.get(i).getBattleId());
+        }
+
+        selectSql.append(")");
+
+        List<MatchInsertResult> results =
+                jdbcClient.sql(selectSql.toString())
+                        .params(selectParams)
+                        .query((rs, rowNum) ->
+                                new MatchInsertResult(
+                                        rs.getString("battle_id"),
+                                        rs.getLong("id")
+                                ))
+                        .list();
+
+        return results.stream()
+                .collect(Collectors.toMap(
+                        MatchInsertResult::battleId,
+                        MatchInsertResult::id
+                ));
     }
 }
