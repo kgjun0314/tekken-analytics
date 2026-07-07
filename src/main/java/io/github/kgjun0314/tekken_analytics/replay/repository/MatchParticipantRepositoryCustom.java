@@ -1,6 +1,9 @@
 package io.github.kgjun0314.tekken_analytics.replay.repository;
 
+import io.github.kgjun0314.tekken_analytics.replay.dto.MatchParticipantInsert;
 import io.github.kgjun0314.tekken_analytics.replay.model.ReplayPlayer;
+
+import java.util.List;
 
 public interface MatchParticipantRepositoryCustom {
     void insert(
@@ -9,5 +12,9 @@ public interface MatchParticipantRepositoryCustom {
             ReplayPlayer player1,
             Long player2Id,
             ReplayPlayer player2
+    );
+
+    void insertAll(
+            List<MatchParticipantInsert> participants
     );
 }

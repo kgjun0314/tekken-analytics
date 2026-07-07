@@ -6,7 +6,17 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "match_participants")
+@Table(
+        name = "match_participants",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        columnNames = {
+                                "match_id",
+                                "player_id"
+                        }
+                )
+        }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

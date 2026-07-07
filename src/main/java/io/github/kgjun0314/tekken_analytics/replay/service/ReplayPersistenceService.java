@@ -2,6 +2,7 @@ package io.github.kgjun0314.tekken_analytics.replay.service;
 
 import io.github.kgjun0314.tekken_analytics.player.dto.PlayerUpsert;
 import io.github.kgjun0314.tekken_analytics.player.service.PlayerService;
+import io.github.kgjun0314.tekken_analytics.replay.dto.MatchParticipantInsert;
 import io.github.kgjun0314.tekken_analytics.replay.entity.Match;
 import io.github.kgjun0314.tekken_analytics.replay.model.ReplayPlayer;
 import io.github.kgjun0314.tekken_analytics.replay.mapper.ReplayMapper;
@@ -51,11 +52,32 @@ public class ReplayPersistenceService {
         );
     }
 
+    @Transactional
     public void saveAll(List<Replay> replays) {
 
-        Map<Long, PlayerUpsert> players = new LinkedHashMap<>();
+        if (replays.isEmpty()) {
+            return;
+        }
+
+        List<Match> matches =
+                new ArrayList<>(replays.size());
+
+        Map<Long, PlayerUpsert> players =
+                new LinkedHashMap<>();
+
+        Map<String, Replay> replayMap =
+                new LinkedHashMap<>();
 
         for (Replay replay : replays) {
+
+            replayMap.put(
+                    replay.battleId(),
+                    replay
+            );
+
+            matches.add(
+                    replayMapper.toMatch(replay)
+            );
 
             ReplayPlayer p1 = replay.player1();
             ReplayPlayer p2 = replay.player2();
@@ -79,44 +101,63 @@ public class ReplayPersistenceService {
             );
         }
 
+        Map<String, Long> insertedMatches =
+                matchRepository.insertIfAbsentAll(
+                        matches
+                );
+
+        if (insertedMatches.isEmpty()) {
+            return;
+        }
+
         Map<Long, Long> playerIds =
                 playerService.upsertAll(
                         new ArrayList<>(players.values())
                 );
 
-        List<Match> matches =
-                replays.stream()
-                        .map(replayMapper::toMatch)
-                        .toList();
+        List<MatchParticipantInsert> participants =
+                new ArrayList<>(
+                        insertedMatches.size() * 2
+                );
 
-        Map<String, Long> matchIds =
-                matchRepository.findOrInsertAll(matches);
+        for (Map.Entry<String, Long> entry
+                : insertedMatches.entrySet()) {
 
-        for (Replay replay : replays) {
-
-            Long matchId =
-                    matchIds.get(replay.battleId());
-
-            if (matchId == null) {
-                continue;
-            }
+            Replay replay =
+                    replayMap.get(
+                            entry.getKey()
+                    );
 
             ReplayPlayer p1 = replay.player1();
             ReplayPlayer p2 = replay.player2();
 
-            Long player1Id =
-                    playerIds.get(p1.userId());
+            participants.add(
+                    new MatchParticipantInsert(
+                            entry.getValue(),
+                            playerIds.get(p1.userId()),
+                            p1.characterId(),
+                            p1.rank(),
+                            p1.power(),
+                            p1.rounds(),
+                            p1.winner()
+                    )
+            );
 
-            Long player2Id =
-                    playerIds.get(p2.userId());
-
-            matchParticipantRepository.insert(
-                    matchId,
-                    player1Id,
-                    p1,
-                    player2Id,
-                    p2
+            participants.add(
+                    new MatchParticipantInsert(
+                            entry.getValue(),
+                            playerIds.get(p2.userId()),
+                            p2.characterId(),
+                            p2.rank(),
+                            p2.power(),
+                            p2.rounds(),
+                            p2.winner()
+                    )
             );
         }
+
+        matchParticipantRepository.insertAll(
+                participants
+        );
     }
 }

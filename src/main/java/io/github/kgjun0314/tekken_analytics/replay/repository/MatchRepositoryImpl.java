@@ -140,4 +140,73 @@ public class MatchRepositoryImpl
                         MatchInsertResult::id
                 ));
     }
+
+    @Override
+    public Map<String, Long> insertIfAbsentAll(
+            List<Match> matches
+    ) {
+
+        if (matches.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        StringBuilder sql = new StringBuilder("""
+            INSERT INTO matches
+            (
+                battle_id,
+                battle_at,
+                battle_type,
+                game_version,
+                stage_id,
+                created_at,
+                updated_at
+            )
+            VALUES
+            """);
+
+        List<Object> params = new ArrayList<>();
+
+        for (int i = 0; i < matches.size(); i++) {
+
+            if (i > 0) {
+                sql.append(", ");
+            }
+
+            sql.append("""
+                (?, ?, ?, ?, ?, now(), now())
+                """);
+
+            Match match = matches.get(i);
+
+            params.add(match.getBattleId());
+            params.add(Timestamp.from(match.getBattleAt()));
+            params.add(match.getBattleType());
+            params.add(match.getGameVersion());
+            params.add(match.getStageId());
+        }
+
+        sql.append("""
+            ON CONFLICT (battle_id)
+            DO NOTHING
+            RETURNING
+                battle_id,
+                id
+            """);
+
+        List<MatchInsertResult> results =
+                jdbcClient.sql(sql.toString())
+                        .params(params)
+                        .query((rs, rowNum) ->
+                                new MatchInsertResult(
+                                        rs.getString("battle_id"),
+                                        rs.getLong("id")
+                                ))
+                        .list();
+
+        return results.stream()
+                .collect(Collectors.toMap(
+                        MatchInsertResult::battleId,
+                        MatchInsertResult::id
+                ));
+    }
 }

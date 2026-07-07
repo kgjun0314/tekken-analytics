@@ -11,4 +11,5 @@ public interface MatchRepositoryCustom {
     Map<String, Long> findOrInsertAll(
             List<Match> matches
     );
+    Map<String, Long> insertIfAbsentAll(List<Match> matches);
 }
