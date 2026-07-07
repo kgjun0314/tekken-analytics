@@ -1,10 +1,10 @@
 package io.github.kgjun0314.tekken_analytics.player.controller;
 
+import io.github.kgjun0314.tekken_analytics.common.dto.PageResponse;
 import io.github.kgjun0314.tekken_analytics.player.dto.PlayerMatchResponse;
 import io.github.kgjun0314.tekken_analytics.player.dto.PlayerSummaryResponse;
 import io.github.kgjun0314.tekken_analytics.player.query.PlayerQueryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +25,7 @@ public class PlayerController {
     }
 
     @GetMapping("/{userId}/matches")
-    public Page<PlayerMatchResponse> getMatches(
+    public PageResponse<PlayerMatchResponse> getMatches(
             @PathVariable Long userId,
             Pageable pageable
     ) {
