@@ -1,5 +1,6 @@
 package io.github.kgjun0314.tekken_analytics.character.matchup;
 
+import io.github.kgjun0314.tekken_analytics.character.model.CharacterMatchupUpdate;
 import io.github.kgjun0314.tekken_analytics.character.repository.CharacterMatchupRepository;
 import io.github.kgjun0314.tekken_analytics.replay.model.Replay;
 import io.github.kgjun0314.tekken_analytics.replay.model.ReplayPlayer;
@@ -9,6 +10,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -92,22 +95,30 @@ public class CharacterMatchupAggregator {
 
         buffered.set(0);
 
+        List<CharacterMatchupUpdate> updates = new ArrayList<>();
+
         deltas.forEach((key, delta) -> {
 
-            long matches =
-                    delta.drainMatches();
+            long matches = delta.drainMatches();
+            long wins = delta.drainWins();
 
             if (matches == 0) {
                 return;
             }
 
-            repository.upsert(
-                    key.characterId(),
-                    key.opponentCharacterId(),
-                    matches,
-                    delta.drainWins()
+            updates.add(
+                    new CharacterMatchupUpdate(
+                            key.characterId(),
+                            key.opponentCharacterId(),
+                            matches,
+                            wins
+                    )
             );
         });
+
+        if (!updates.isEmpty()) {
+            repository.upsertAll(updates);
+        }
     }
 
     @PreDestroy
