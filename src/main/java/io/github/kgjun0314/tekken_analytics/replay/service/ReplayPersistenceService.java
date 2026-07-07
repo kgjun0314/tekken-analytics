@@ -20,6 +20,17 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ReplayPersistenceService {
 
+    private static record ReplayPlayers(
+            ReplayPlayer player1,
+            ReplayPlayer player2
+    ) {}
+
+    private static record ReplayBatchContext(
+            List<Match> matches,
+            Map<Long, PlayerUpsert> players,
+            Map<String, ReplayPlayers> replays
+    ) {}
+
     private final PlayerService playerService;
     private final ReplayMapper replayMapper;
 
@@ -52,12 +63,9 @@ public class ReplayPersistenceService {
         );
     }
 
-    @Transactional
-    public void saveAll(List<Replay> replays) {
-
-        if (replays.isEmpty()) {
-            return;
-        }
+    private ReplayBatchContext collectContext(
+            List<Replay> replays
+    ) {
 
         List<Match> matches =
                 new ArrayList<>(replays.size());
@@ -65,66 +73,78 @@ public class ReplayPersistenceService {
         Map<Long, PlayerUpsert> players =
                 new LinkedHashMap<>();
 
-        Map<String, Replay> replayMap =
+        Map<String, ReplayPlayers> replayMap =
                 new LinkedHashMap<>();
 
         for (Replay replay : replays) {
 
-            replayMap.put(
-                    replay.battleId(),
-                    replay
-            );
+            ReplayPlayer p1 = replay.player1();
+            ReplayPlayer p2 = replay.player2();
 
             matches.add(
                     replayMapper.toMatch(replay)
             );
 
-            ReplayPlayer p1 = replay.player1();
-            ReplayPlayer p2 = replay.player2();
+            replayMap.put(
+                    replay.battleId(),
+                    new ReplayPlayers(
+                            p1,
+                            p2
+                    )
+            );
 
             players.put(
                     p1.userId(),
-                    new PlayerUpsert(
-                            p1.userId(),
-                            p1.polarisId(),
-                            p1.nickname()
-                    )
+                    replayMapper.toPlayerUpsert(p1)
             );
 
             players.put(
                     p2.userId(),
-                    new PlayerUpsert(
-                            p2.userId(),
-                            p2.polarisId(),
-                            p2.nickname()
-                    )
+                    replayMapper.toPlayerUpsert(p2)
             );
         }
 
-        Map<String, Long> insertedMatches =
-                matchRepository.insertIfAbsentAll(
-                        matches
-                );
+        return new ReplayBatchContext(
+                matches,
+                players,
+                replayMap
+        );
+    }
 
-        if (insertedMatches.isEmpty()) {
-            return;
-        }
+    private Map<String, Long> persistMatches(
+            ReplayBatchContext context
+    ) {
 
-        Map<Long, Long> playerIds =
-                playerService.upsertAll(
-                        new ArrayList<>(players.values())
-                );
+        return matchRepository.insertIfAbsentAll(
+                context.matches()
+        );
+    }
+
+    private Map<Long, Long> persistPlayers(
+            ReplayBatchContext context
+    ) {
+
+        return playerService.upsertAll(
+                new ArrayList<>(
+                        context.players().values()
+                )
+        );
+    }
+
+    private List<MatchParticipantInsert> buildParticipants(
+            ReplayBatchContext context,
+            Map<String, Long> matchIds,
+            Map<Long, Long> playerIds
+    ) {
 
         List<MatchParticipantInsert> participants =
-                new ArrayList<>(
-                        insertedMatches.size() * 2
-                );
+                new ArrayList<>(matchIds.size() * 2);
 
         for (Map.Entry<String, Long> entry
-                : insertedMatches.entrySet()) {
+                : matchIds.entrySet()) {
 
-            Replay replay =
-                    replayMap.get(
+            ReplayPlayers replay =
+                    context.replays().get(
                             entry.getKey()
                     );
 
@@ -132,32 +152,63 @@ public class ReplayPersistenceService {
             ReplayPlayer p2 = replay.player2();
 
             participants.add(
-                    new MatchParticipantInsert(
+                    replayMapper.toParticipantInsert(
                             entry.getValue(),
                             playerIds.get(p1.userId()),
-                            p1.characterId(),
-                            p1.rank(),
-                            p1.power(),
-                            p1.rounds(),
-                            p1.winner()
+                            p1
                     )
             );
 
             participants.add(
-                    new MatchParticipantInsert(
+                    replayMapper.toParticipantInsert(
                             entry.getValue(),
                             playerIds.get(p2.userId()),
-                            p2.characterId(),
-                            p2.rank(),
-                            p2.power(),
-                            p2.rounds(),
-                            p2.winner()
+                            p2
                     )
             );
         }
 
+        return participants;
+    }
+
+    private void persistParticipants(
+            List<MatchParticipantInsert> participants
+    ) {
+
+        if (participants.isEmpty()) {
+            return;
+        }
+
         matchParticipantRepository.insertAll(
                 participants
+        );
+    }
+
+    @Transactional
+    public void saveAll(List<Replay> replays) {
+
+        if (replays.isEmpty()) {
+            return;
+        }
+
+        ReplayBatchContext context =
+                collectContext(replays);
+
+        Map<String, Long> matchIds =
+                persistMatches(context);
+
+        if (matchIds.isEmpty()) {
+            return;
+        }
+
+        Map<Long, Long> playerIds =
+                persistPlayers(context);
+
+        persistParticipants(buildParticipants(
+                context,
+                matchIds,
+                playerIds
+                )
         );
     }
 }

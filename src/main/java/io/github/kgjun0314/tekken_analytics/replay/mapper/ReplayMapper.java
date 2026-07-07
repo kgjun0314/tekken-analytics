@@ -1,6 +1,8 @@
 package io.github.kgjun0314.tekken_analytics.replay.mapper;
 
+import io.github.kgjun0314.tekken_analytics.player.dto.PlayerUpsert;
 import io.github.kgjun0314.tekken_analytics.player.entity.Player;
+import io.github.kgjun0314.tekken_analytics.replay.dto.MatchParticipantInsert;
 import io.github.kgjun0314.tekken_analytics.replay.model.ReplayPlayer;
 import io.github.kgjun0314.tekken_analytics.replay.dto.WankReplayResponse;
 import io.github.kgjun0314.tekken_analytics.replay.entity.Match;
@@ -31,6 +33,34 @@ public class ReplayMapper {
                 response.stageId(),
                 response.player1(),
                 response.player2()
+        );
+    }
+
+    public MatchParticipantInsert toParticipantInsert(
+            Long matchId,
+            Long playerId,
+            ReplayPlayer replayPlayer
+    ) {
+
+        return new MatchParticipantInsert(
+                matchId,
+                playerId,
+                replayPlayer.characterId(),
+                replayPlayer.rank(),
+                replayPlayer.power(),
+                replayPlayer.rounds(),
+                replayPlayer.winner()
+        );
+    }
+
+    public PlayerUpsert toPlayerUpsert(
+            ReplayPlayer player
+    ) {
+
+        return new PlayerUpsert(
+                player.userId(),
+                player.polarisId(),
+                player.nickname()
         );
     }
 }
