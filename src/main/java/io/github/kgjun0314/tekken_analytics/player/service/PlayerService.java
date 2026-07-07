@@ -1,10 +1,14 @@
 package io.github.kgjun0314.tekken_analytics.player.service;
 
+import io.github.kgjun0314.tekken_analytics.player.dto.PlayerUpsert;
 import io.github.kgjun0314.tekken_analytics.player.repository.PlayerRepository;
 import io.github.kgjun0314.tekken_analytics.replay.model.ReplayPlayer;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -19,5 +23,9 @@ public class PlayerService {
                 replayPlayer.polarisId(),
                 replayPlayer.nickname()
         );
+    }
+
+    public Map<Long, Long> upsertAll(List<PlayerUpsert> players) {
+        return playerRepository.upsertAll(players);
     }
 }
