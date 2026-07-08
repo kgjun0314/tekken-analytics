@@ -1,6 +1,5 @@
 package io.github.kgjun0314.tekken_analytics.character.repository;
 
-import io.github.kgjun0314.tekken_analytics.benchmark.RepositoryMetrics;
 import io.github.kgjun0314.tekken_analytics.character.model.CharacterStatUpdate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;

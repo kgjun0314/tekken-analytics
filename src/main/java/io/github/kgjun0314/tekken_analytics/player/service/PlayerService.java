@@ -1,6 +1,6 @@
 package io.github.kgjun0314.tekken_analytics.player.service;
 
-import io.github.kgjun0314.tekken_analytics.player.dto.PlayerUpsert;
+import io.github.kgjun0314.tekken_analytics.player.repository.dto.PlayerUpsert;
 import io.github.kgjun0314.tekken_analytics.player.repository.PlayerRepository;
 import io.github.kgjun0314.tekken_analytics.replay.model.ReplayPlayer;
 import jakarta.transaction.Transactional;

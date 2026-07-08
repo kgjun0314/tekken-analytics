@@ -1,8 +1,8 @@
 package io.github.kgjun0314.tekken_analytics.replay.service;
 
-import io.github.kgjun0314.tekken_analytics.player.dto.PlayerUpsert;
+import io.github.kgjun0314.tekken_analytics.player.repository.dto.PlayerUpsert;
 import io.github.kgjun0314.tekken_analytics.player.service.PlayerService;
-import io.github.kgjun0314.tekken_analytics.replay.dto.MatchParticipantInsert;
+import io.github.kgjun0314.tekken_analytics.replay.repository.dto.MatchParticipantInsert;
 import io.github.kgjun0314.tekken_analytics.replay.entity.Match;
 import io.github.kgjun0314.tekken_analytics.replay.model.ReplayPlayer;
 import io.github.kgjun0314.tekken_analytics.replay.mapper.ReplayMapper;

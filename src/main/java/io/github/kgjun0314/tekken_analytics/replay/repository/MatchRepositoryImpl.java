@@ -1,6 +1,6 @@
 package io.github.kgjun0314.tekken_analytics.replay.repository;
 
-import io.github.kgjun0314.tekken_analytics.replay.dto.MatchInsertResult;
+import io.github.kgjun0314.tekken_analytics.replay.repository.dto.MatchInsertResult;
 import io.github.kgjun0314.tekken_analytics.replay.entity.Match;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;

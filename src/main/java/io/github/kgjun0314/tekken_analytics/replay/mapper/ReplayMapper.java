@@ -1,12 +1,10 @@
 package io.github.kgjun0314.tekken_analytics.replay.mapper;
 
-import io.github.kgjun0314.tekken_analytics.player.dto.PlayerUpsert;
-import io.github.kgjun0314.tekken_analytics.player.entity.Player;
-import io.github.kgjun0314.tekken_analytics.replay.dto.MatchParticipantInsert;
+import io.github.kgjun0314.tekken_analytics.player.repository.dto.PlayerUpsert;
+import io.github.kgjun0314.tekken_analytics.replay.repository.dto.MatchParticipantInsert;
 import io.github.kgjun0314.tekken_analytics.replay.model.ReplayPlayer;
 import io.github.kgjun0314.tekken_analytics.replay.dto.WankReplayResponse;
 import io.github.kgjun0314.tekken_analytics.replay.entity.Match;
-import io.github.kgjun0314.tekken_analytics.replay.entity.MatchParticipant;
 import io.github.kgjun0314.tekken_analytics.replay.model.Replay;
 import org.springframework.stereotype.Component;
 

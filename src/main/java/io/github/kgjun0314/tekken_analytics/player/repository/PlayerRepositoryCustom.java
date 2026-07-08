@@ -1,6 +1,6 @@
 package io.github.kgjun0314.tekken_analytics.player.repository;
 
-import io.github.kgjun0314.tekken_analytics.player.dto.PlayerUpsert;
+import io.github.kgjun0314.tekken_analytics.player.repository.dto.PlayerUpsert;
 
 import java.util.List;
 import java.util.Map;

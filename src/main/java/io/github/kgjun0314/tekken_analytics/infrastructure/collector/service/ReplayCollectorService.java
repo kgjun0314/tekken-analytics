@@ -1,0 +1,30 @@
+package io.github.kgjun0314.tekken_analytics.infrastructure.collector.service;
+
+import io.github.kgjun0314.tekken_analytics.infrastructure.rabbitmq.producer.ReplayProducer;
+import io.github.kgjun0314.tekken_analytics.infrastructure.client.WankApiClient;
+import io.github.kgjun0314.tekken_analytics.replay.dto.WankReplayResponse;
+import io.github.kgjun0314.tekken_analytics.replay.mapper.ReplayMapper;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class ReplayCollectorService {
+    private final WankApiClient client;
+    private final ReplayMapper replayMapper;
+    private final ReplayProducer replayProducer;
+
+    @Transactional
+    public void collect() {
+
+        List<WankReplayResponse> responses =
+                client.getLatestReplays();
+
+        responses.stream()
+                .map(replayMapper::toReplay)
+                .forEach(replayProducer::publish);
+    }
+}

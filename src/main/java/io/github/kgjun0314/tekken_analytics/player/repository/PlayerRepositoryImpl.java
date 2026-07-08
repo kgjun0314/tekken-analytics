@@ -1,7 +1,7 @@
 package io.github.kgjun0314.tekken_analytics.player.repository;
 
-import io.github.kgjun0314.tekken_analytics.player.dto.PlayerUpsertResult;
-import io.github.kgjun0314.tekken_analytics.player.dto.PlayerUpsert;
+import io.github.kgjun0314.tekken_analytics.player.repository.dto.PlayerUpsertResult;
+import io.github.kgjun0314.tekken_analytics.player.repository.dto.PlayerUpsert;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
