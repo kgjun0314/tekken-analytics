@@ -3,9 +3,9 @@ spring:
     name: tekken-analytics
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/tekken
+    username: postgres
+    password: 1234
     hikari:
       maximum-pool-size: 16
       minimum-idle: 8
@@ -29,3 +29,10 @@ spring:
         max-concurrency: 1
         prefetch: 50
         default-requeue-rejected: false
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
+
+  api-docs:
+    path: /api-docs
