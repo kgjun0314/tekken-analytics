@@ -2,6 +2,7 @@ package io.github.kgjun0314.tekken_analytics.player.query;
 
 import io.github.kgjun0314.tekken_analytics.character.model.Character;
 import io.github.kgjun0314.tekken_analytics.common.dto.PageResponse;
+import io.github.kgjun0314.tekken_analytics.common.exception.PlayerNotFoundException;
 import io.github.kgjun0314.tekken_analytics.player.dto.PlayerMatchProjection;
 import io.github.kgjun0314.tekken_analytics.player.dto.PlayerMatchResponse;
 import io.github.kgjun0314.tekken_analytics.player.dto.PlayerSummaryResponse;
@@ -21,8 +22,14 @@ public class PlayerQueryService {
     private final PlayerRepository playerRepository;
     private final MatchParticipantRepository participantRepository;
 
+    @Transactional(readOnly = true)
+    public Player getByUserId(Long userId) {
+        return playerRepository.findByUserId(userId)
+                .orElseThrow(PlayerNotFoundException::new);
+    }
+
     public PlayerSummaryResponse getSummary(Long userId) {
-        Player player = playerRepository.findByUserId(userId).orElseThrow();
+        Player player = getByUserId(userId);
 
         long matches = participantRepository.countByPlayer(player);
 
@@ -46,6 +53,8 @@ public class PlayerQueryService {
             Long userId,
             Pageable pageable
     ) {
+        getByUserId(userId);
+
         Page<PlayerMatchProjection> page = participantRepository.findPlayerMatches(
                 userId,
                 pageable
