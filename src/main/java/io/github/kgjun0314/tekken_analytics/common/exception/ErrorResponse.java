@@ -20,7 +20,7 @@ public record ErrorResponse(
                 Instant.now(),
                 errorCode.getStatus().value(),
                 errorCode.getStatus().getReasonPhrase(),
-                errorCode.getCode(),
+                errorCode.name(),
                 errorCode.getMessage(),
                 path
         );

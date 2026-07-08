@@ -40,7 +40,12 @@ public class PlayerController {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "플레이어를 찾을 수 없음"
+                    description = "플레이어를 찾을 수 없음",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = ErrorResponse.class
+                            )
+                    )
             )
     })
     @GetMapping("/{userId}")
@@ -61,7 +66,12 @@ public class PlayerController {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "플레이어를 찾을 수 없음"
+                    description = "플레이어를 찾을 수 없음",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = ErrorResponse.class
+                            )
+                    )
             )
     })
     @GetMapping("/{userId}/matches")
