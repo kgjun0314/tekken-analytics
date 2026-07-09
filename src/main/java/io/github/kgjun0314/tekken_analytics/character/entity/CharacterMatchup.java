@@ -2,9 +2,7 @@ package io.github.kgjun0314.tekken_analytics.character.entity;
 
 import io.github.kgjun0314.tekken_analytics.common.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(
@@ -20,6 +18,8 @@ import lombok.NoArgsConstructor;
 )
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class CharacterMatchup extends BaseEntity {
 
     @Id
