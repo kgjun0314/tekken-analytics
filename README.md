@@ -91,7 +91,6 @@ Repository 통합 테스트에서 실제 PostgreSQL 컨테이너를 사용하여
                                    v
                         +----------------------+
                         |  Replay Collector    |
-                        | (External API Call)  |
                         +----------+-----------+
                                    |
                                    v
@@ -112,20 +111,23 @@ Repository 통합 테스트에서 실제 PostgreSQL 컨테이너를 사용하여
           +------------------------+------------------------+
           |                         |                        |
           v                         v                        v
-+--------------------+   +----------------------+   +------------------------+
-| Replay Persistence |   | Character Statistics |   | Character Matchup      |
-|      Service       |   |      Aggregator      |   |      Aggregator        |
-+---------+----------+   +----------+-----------+   +-----------+------------+
-          |                         |                           |
-          |                         |                           |
-   Batch Aggregation         Batch Aggregation           Batch Aggregation
-          |                         |                           |
-          +-------------------------+---------------------------+
-                                    |
-                                    v
-                         +------------------------+
-                         |      PostgreSQL        |
-                         +------------------------+
++----------------------+  +----------------------+  +----------------------+
+| Replay Persistence   |  | Character Statistics |  | Character Matchup    |
+|     Aggregator       |  |      Aggregator      |  |      Aggregator      |
++----------+-----------+  +----------+-----------+  +----------+-----------+
+           |                         |                         |
+           v                         v                         v
++----------------------+   Batch UPSERT              Batch UPSERT
+| ReplayPersistence    |          │                         │
+|      Service         |          │                         │
++----------+-----------+          └───────────┬─────────────┘
+           |                                  │
+           └────── Batch INSERT / UPSERT ─────┘
+                          │
+                          ▼
+                   +------------------+
+                   |    PostgreSQL    |
+                   +------------------+
 ```
 
 ---
