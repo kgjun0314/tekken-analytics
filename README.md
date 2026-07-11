@@ -118,7 +118,7 @@ Repository 통합 테스트에서 실제 PostgreSQL 컨테이너를 사용하여
 +---------+----------+   +----------+-----------+   +-----------+------------+
           |                         |                           |
           |                         |                           |
-          |                  Batch Aggregation          Batch Aggregation
+   Batch Aggregation         Batch Aggregation           Batch Aggregation
           |                         |                           |
           +-------------------------+---------------------------+
                                     |
@@ -156,7 +156,7 @@ Replay Consumer는 RabbitMQ에서 메시지를 소비하며 다음 작업을 수
 
 #### 3. Batch Aggregation
 
-캐릭터 통계와 상성 통계는 리플레이가 들어올 때마다 즉시 데이터베이스를 갱신하지 않습니다.
+리플레이가 들어올 때마다 즉시 데이터베이스를 갱신하지 않습니다.
 
 먼저 메모리에서 통계를 누적한 뒤 일정 개수 이상이 모이거나 일정 시간이 지나면 Batch UPSERT를 수행합니다.
 
